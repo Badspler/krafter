@@ -19,9 +19,14 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
         streamsList.add(stream);
     }
 
+    public ArrayList<String> getStreamsList(){
+        return streamsList;
+    }
+
     public void setAnimeTitle(String title) {
         this.title = title;
     }
+    public String getAnimeTitle() {return title;}
 
     public void setAlias(String alias) {
         this.alias = alias;
@@ -121,4 +126,32 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 //      primevideo|Prime Video International: ''
 //      nyaa: 'Higurashi no Naku Koro ni'
 //    ---
+
+    public static final String emptySeriesTemplate = "#---\n" +
+            "#title: ''\n" +
+            "#alias: ['']\n" +
+            "#has_source: true\n" +
+            "#info:\n" +
+            "#  mal: ''\n" +
+            "#  anilist: ''\n" +
+            "#  anidb: ''\n" +
+            "#  kitsu: ''\n" +
+            "#  animeplanet: ''\n" +
+            "#  official: ''\n" +
+            "#  subreddit: ''\n" +
+            "#streams:\n" +
+            "#  crunchyroll: ''\n" +
+            "#  museasia: ''\n" +
+            "#  funimation|Funimation: ''\n" +
+            "#  wakanim|Wakanim: ''\n" +
+            "#  hidive: ''\n" +
+            "#  animelab|AnimeLab: ''\n" +
+            "#  crunchyroll_nsfw|Crunchyroll: ''\n" +
+            "#  vrv|VRV: ''\n" +
+            "#  hulu|Hulu: ''\n" +
+            "#  youtube: ''\n" +
+            "#  amazon|Amazon US: ''\n" +
+            "#  amazon_uk|Amazon UK: ''\n" +
+            "#  primevideo|Prime Video International: ''\n";
+
 }
