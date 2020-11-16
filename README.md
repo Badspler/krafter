@@ -9,6 +9,6 @@ Especially for episode names.
 
 ---
 
-Setup to use Chrome, no testing has been done otherwise.
+Setup to use Chrome, no testing has been done on other web browsers.
 
 Uses the selenium chromedriver_win32 driver in /libs.
