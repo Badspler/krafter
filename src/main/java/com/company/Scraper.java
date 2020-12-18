@@ -4,6 +4,7 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -28,10 +29,42 @@ public class Scraper {
     public void scrape() {
         ArrayList<AnimeSeries> series = new ArrayList<AnimeSeries>();
 
+//        System.setProperty("webdriver.chrome.driver",driverFile.getPath());
+//        WebDriver driver = new ChromeDriver();
+
+
         System.setProperty("webdriver.chrome.driver",driverFile.getPath());
-        WebDriver driver = new ChromeDriver();
+        ChromeOptions options = new ChromeOptions();
+        //C:\Users\Chris\AppData\Local\Google\Chrome\User Data\Default
+//        options.addArguments("user-data-dir=C:/Users/Chris/AppData/Local/Google/Chrome/User Data/");
+//        options.addArguments("profile-directory=Profile 8");
+        options.addArguments("--start-maximized");
+
+        //Anti cloudflare
+//        options.add_experimental_option('excludeSwitches', ['load-extension', 'enable-automation'])
+
+//        options.setExperimentalOption("excludeSwitches", Arrays.asList("disable-popup-blocking"));
+        options.setExperimentalOption("excludeSwitches", Collections.singletonList("enable-automation"));
+        options.setExperimentalOption("useAutomationExtension", false);
+
+        options.addArguments("disable-infobars");
+        options.addArguments("--disable-extensions");
+        options.addArguments("--disable-blink-features=AutomationControlled");
+//        options.addArguments("--start-maximized");
+//        options.addArguments("--start-maximized");
+        WebDriver driver = new ChromeDriver(options);
+
+        //Cloudflare
+//        options = webdriver.ChromeOptions()
+//        options.add_experimental_option("excludeSwitches", ["enable-automation"])
+//        options.add_experimental_option('useAutomationExtension', False)
+//        options.add_argument("--disable-blink-features=AutomationControlled")
+//        driver = webdriver.Chrome(options=options)
+//        driver.get(URL)
+
+
         //Exclude season leftovers with: ?leftovers=false
-        String livechartURL = enteredURL + "?leftovers=false";
+        String livechartURL = enteredURL + "?leftovers=false&ongoing=none";
 
         //Create href list of all seasons non-ongoing shows
         ArrayList<String> animeList = scrapeSeasonChart(driver,livechartURL);
@@ -194,6 +227,15 @@ public class Scraper {
         //TODO: require season to be passed by user; https://www.livechart.me/winter-2021/tv
         //Hide leftovers
         driver.get(livechartURL);
+
+        try {
+            System.out.println("Waiting");
+            Thread.sleep(45000);
+            System.out.println("Waiting finished.");
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
 
         //Find all the season shows
         ArrayList<String> animeList = new ArrayList<>();

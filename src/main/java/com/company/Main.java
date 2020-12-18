@@ -12,6 +12,10 @@ public class Main {
         System.out.println("Enter a livechart.me season URL to scan: ");
         System.out.println("Example: " + "https://www.livechart.me/winter-2021/tv");
         String url = reader.nextLine(); // Scans the next token of the input as an int.
+
+        if(url.equals(""))
+            url="https://www.livechart.me/winter-2021/tv";
+
         reader.close();
 
         if(!url.contains("livechart.me")){
@@ -60,3 +64,4 @@ public class Main {
         return null;
     }
 }
+
