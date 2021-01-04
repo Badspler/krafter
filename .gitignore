@@ -2,3 +2,5 @@
 debug.log
 target/
 .iml
+output/output.yaml
+output/output_all_streams.yaml
