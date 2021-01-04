@@ -80,9 +80,6 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  vrv|VRV: '"+findSource(streamsList,"vrv.co")+"'" +
                 "\n  hulu|Hulu: '"+findSource(streamsList,"hulu.com")+"'" +
                 "\n  youtube: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  amazon|Amazon US: '"+findSource(streamsList,"amazon.com")+"'" +
-                "\n  amazon_uk|Amazon UK: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  primevideo|Prime Video International: '"+findSource(streamsList,"TODO")+"'" +
                 "\n  nyaa: '"+"'"; //+title+
 
         return s;
@@ -121,9 +118,6 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 //      vrv|VRV: ''
 //      hulu|Hulu: 'https://www.hulu.com/series/higurashi-when-they-cry-eebf8a07-1977-4045-9ee9-f9d2f0799634'
 //      youtube: ''
-//      amazon|Amazon US: ''
-//      amazon_uk|Amazon UK: ''
-//      primevideo|Prime Video International: ''
 //      nyaa: 'Higurashi no Naku Koro ni'
 //    ---
 
@@ -150,8 +144,5 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
             "#  vrv|VRV: ''\n" +
             "#  hulu|Hulu: ''\n" +
             "#  youtube: ''\n" +
-            "#  amazon|Amazon US: ''\n" +
-            "#  amazon_uk|Amazon UK: ''\n" +
-            "#  primevideo|Prime Video International: ''\n";
-
+            "#  nyaa: ''\n";
 }
