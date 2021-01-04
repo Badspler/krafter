@@ -2,4 +2,4 @@
 debug.log
 target/
 .iml
-output/
+output/*
