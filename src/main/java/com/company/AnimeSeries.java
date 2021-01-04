@@ -78,11 +78,10 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  wakanim|Wakanim: '"+findSource(streamsList,"wakanim.tv/sc")+"'" +
                 "\n  hidive: '"+findSource(streamsList,"hidive.com")+"'" +
                 "\n  animelab|AnimeLab: '"+findSource(streamsList,"animelab.com")+"'" +
-                "\n  crunchyroll_nsfw|Crunchyroll: '"+findSource(streamsList,"TODO")+"'" +
                 "\n  vrv|VRV: '"+findSource(streamsList,"vrv.co")+"'" +
                 "\n  hulu|Hulu: '"+findSource(streamsList,"hulu.com")+"'" +
                 "\n  youtube: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  nyaa: '"+"'"; //+title+
+                "\n  nyaa: '"+title+"'"; //+title+
 
         return s;
     }
