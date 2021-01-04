@@ -73,7 +73,9 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  museasia: '"+findSource(streamsList,"TODO")+"'" +
                 "\n  anione: '"+findSource(streamsList,"TODO")+"'" +
                 "\n  funimation|Funimation: '"+findSource(streamsList,"funimation.com")+"'" +
-                "\n  wakanim|Wakanim: '"+findSource(streamsList,"wakanim.tv")+"'" +
+                //Only Wakanim Nordic offers English anime, that comes under '/sc' for whatever reason
+                //akanim Nordic countries: Sweden, Norway, Iceland, Finland, the Netherlands and Denmark.
+                "\n  wakanim|Wakanim: '"+findSource(streamsList,"wakanim.tv/sc")+"'" +
                 "\n  hidive: '"+findSource(streamsList,"hidive.com")+"'" +
                 "\n  animelab|AnimeLab: '"+findSource(streamsList,"animelab.com")+"'" +
                 "\n  crunchyroll_nsfw|Crunchyroll: '"+findSource(streamsList,"TODO")+"'" +
