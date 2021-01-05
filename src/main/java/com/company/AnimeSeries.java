@@ -24,6 +24,11 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     }
 
     public void setAnimeTitle(String title) {
+        title = title.replace("(TV)","");//removes (TV) from names
+
+        //TODO auto-replacement of "2nd Season" with "Season 2"
+        //holo's standard is Seriesname Season X, anime names are non-standard
+
         this.title = title;
     }
     public String getAnimeTitle() {return title;}
@@ -55,7 +60,10 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     public String toString(){
         String s ="title: '"+title+"'";
         if(alias!=null)
-            s = s+"\nalias: ['"+alias+"']";
+            if(alias.contains("'"))
+                s = s+"\nalias: [\""+alias+"\"]"; //escape ' and instead use quotes
+            else
+                s = s+"\nalias: ['"+alias+"']";
 
         s=s +
                 "\nhas_source: " + hasSource+
@@ -81,7 +89,7 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  vrv|VRV: '"+findSource(streamsList,"vrv.co")+"'" +
                 "\n  hulu|Hulu: '"+findSource(streamsList,"hulu.com")+"'" +
                 "\n  youtube: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  nyaa: '"+title+"'"; //+title+
+                "\n  nyaa: ''"; // Title is automatically searched so this is only for alt names
 
         return s;
     }

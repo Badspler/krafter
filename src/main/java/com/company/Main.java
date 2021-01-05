@@ -11,6 +11,7 @@ public class Main {
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a livechart.me season URL to scan: ");
         System.out.println("Example: " + "https://www.livechart.me/winter-2021/tv");
+        System.out.println("Example: " + "https://www.livechart.me/spring-2021/tv");
         String url = reader.nextLine(); // Scans the next token of the input as an int.
 
         if(url.equals(""))

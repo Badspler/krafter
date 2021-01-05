@@ -224,7 +224,6 @@ public class Scraper {
 
     private ArrayList<String> scrapeSeasonChart(WebDriver driver, String livechartURL) {
 
-        //TODO: require season to be passed by user; https://www.livechart.me/winter-2021/tv
         //Hide leftovers
         driver.get(livechartURL);
 
@@ -236,6 +235,8 @@ public class Scraper {
             e.printStackTrace();
         }
 
+        //TODO: Make a filter file that will be used here to filter out shows from being scanned.
+        //TODO: Useful for "not anime" series/ONA's/shows withouth enough info/after episode shorts that can just be part of the main series discussion
 
         //Find all the season shows
         ArrayList<String> animeList = new ArrayList<>();
