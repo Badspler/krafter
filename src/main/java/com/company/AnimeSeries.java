@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class AnimeSeries implements Comparable<AnimeSeries>{
 
@@ -9,11 +10,16 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     private String officalSite;
 
     private ArrayList<String> streamsList = new ArrayList<>();
+    private HashMap<String,String> youTubeStreamsList=new HashMap<String,String>();
     private ArrayList<String> infoList = new ArrayList<>();
     private String url;
 
     public void addInfo(String info){
         infoList.add(info);
+    }
+
+    public void addYouTubeStream(String youtubeName, String stream){
+        youTubeStreamsList.put(youtubeName,stream);
     }
     public void addStream(String stream){
         streamsList.add(stream);
@@ -48,13 +54,35 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     public void setUrl(String url) { this.url = url;}
 
 
-    private String findSource(ArrayList<String> list, String contains){
+    private String findInfo(ArrayList<String> list, String contains){
         for(String s : list){
             if(s.toLowerCase().contains(contains.toLowerCase())){
                 return s;
             }
         }
         return "";
+    }
+
+    private String findSource(String contains){
+        for(String s : streamsList){
+            if(s.toLowerCase().contains(contains.toLowerCase())){
+                return s;
+            }
+        }
+        return "";
+    }
+
+    private String findYouTubeSource(String contains){
+        String s = youTubeStreamsList.get(contains);
+        //for debugging: prints everything in map
+//        youTubeStreamsList.entrySet().forEach(entry->{
+//            System.out.println(entry.getKey() + " " + entry.getValue());
+//        });
+
+        if(s ==null)
+            return "";//Not found
+        else
+            return s;
     }
 
     public String toString(){
@@ -68,27 +96,27 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
         s=s +
                 "\nhas_source: " + hasSource+
                 "\ninfo:" +
-                "\n  mal: '"+findSource(infoList,"myanimelist.net")+"'" +
-                "\n  anilist: '"+findSource(infoList,"anilist.co")+"'" +
-                "\n  anidb: '"+findSource(infoList,"anidb.net")+"'" +
-                "\n  kitsu: '"+findSource(infoList,"kitsu.io")+"'"+
-                "\n  animeplanet: '"+findSource(infoList,"anime-planet.com")+"'"+
+                "\n  mal: '"+findInfo(infoList,"myanimelist.net")+"'" +
+                "\n  anilist: '"+findInfo(infoList,"anilist.co")+"'" +
+                "\n  anidb: '"+findInfo(infoList,"anidb.net")+"'" +
+                "\n  kitsu: '"+findInfo(infoList,"kitsu.io")+"'"+
+                "\n  animeplanet: '"+findInfo(infoList,"anime-planet.com")+"'"+
                 "\n  official: '"+officalSite+"'"+
                 "\n  subreddit: ''";
         s=s +
                 "\nstreams: " +
-                "\n  crunchyroll: '"+findSource(streamsList,"crunchyroll.com")+"'" +
-                "\n  museasia: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  anione: '"+findSource(streamsList,"TODO")+"'" +
-                "\n  funimation|Funimation: '"+findSource(streamsList,"funimation.com")+"'" +
+                "\n  crunchyroll: '"+findSource("crunchyroll.com")+"'" +
+                "\n  museasia: '"+findYouTubeSource("Muse Asia")+"'" +
+                "\n  anione: '"+findYouTubeSource("Ani-One")+"'" +
+                "\n  funimation|Funimation: '"+findSource("funimation.com")+"'" +
                 //Only Wakanim Nordic offers English anime, that comes under '/sc' for whatever reason
                 //akanim Nordic countries: Sweden, Norway, Iceland, Finland, the Netherlands and Denmark.
-                "\n  wakanim|Wakanim: '"+findSource(streamsList,"wakanim.tv/sc")+"'" +
-                "\n  hidive: '"+findSource(streamsList,"hidive.com")+"'" +
-                "\n  animelab|AnimeLab: '"+findSource(streamsList,"animelab.com")+"'" +
-                "\n  vrv|VRV: '"+findSource(streamsList,"vrv.co")+"'" +
-                "\n  hulu|Hulu: '"+findSource(streamsList,"hulu.com")+"'" +
-                "\n  youtube: '"+findSource(streamsList,"TODO")+"'" +
+                "\n  wakanim|Wakanim: '"+findSource("wakanim.tv/sc")+"'" +
+                "\n  hidive: '"+findSource("hidive.com")+"'" +
+                "\n  animelab|AnimeLab: '"+findSource("animelab.com")+"'" +
+                "\n  vrv|VRV: '"+findSource("vrv.co")+"'" +
+                "\n  hulu|Hulu: '"+findSource("hulu.com")+"'" +
+                "\n  youtube: '"+findSource("TODO")+"'" +
                 "\n  nyaa: ''"; // Title is automatically searched so this is only for alt names
 
         return s;

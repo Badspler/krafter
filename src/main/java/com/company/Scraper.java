@@ -229,7 +229,7 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(45000);
+            Thread.sleep(20000);
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -273,6 +273,18 @@ public class Scraper {
         while(elem.size() != 0){
 //            System.out.println(elem.get(0).getText());
 //            System.out.println(elem.get(0).getAttribute("href"));
+            if(elem.get(0).getAttribute("href").contains("youtube.com")){
+                //Now scrape and check for "subbed/dubbed (english) otherwise discard it
+                ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/small"));
+//                System.out.println(checkSubElement.get(0).getText().toLowerCase());
+                if(checkSubElement.get(0).getText().toLowerCase().contains("english")){
+                    anime.addYouTubeStream(elem.get(0).getText(), elem.get(0).getAttribute("href"));
+//                    System.out.println("added youtube stream for: " + elem.get(0).getText());//Might not be an english stream though
+//                    System.out.println(elem.get(0).getAttribute("href"));
+                }
+                //Intentionally allow it to be added to all streams as well
+            }
+
             anime.addStream(elem.get(0).getAttribute("href"));
 
             count++;
