@@ -81,9 +81,30 @@ public class Scraper {
         writePath = System.getProperty("user.dir")+ "\\output\\output_all_streams.yaml";
         writeStringToFile(textToWrite,writePath);
 
+        textToWrite = seriesToMALList(series);
+        writePath = System.getProperty("user.dir")+ "\\output\\output_MAL_list.yaml";
+        writeStringToFile(textToWrite,writePath);
+
         //Close off driver
         driver.close();
         System.out.println("Driver Closed");
+    }
+
+
+    private String seriesToMALList(ArrayList<AnimeSeries> series) {
+        Collections.sort(series);
+        String output = "";
+        // Find MAL entry for each show
+        for(AnimeSeries a : series){
+            String s = a.findInfo("myanimelist.net") + "\n";
+
+            if(s==null){
+                s = "No MAL entry found: " + a.getAnimeTitle();
+            }
+
+            output = output + s;
+        }
+        return output;
     }
 
     private String streamsToString(ArrayList<AnimeSeries> series) {
@@ -277,10 +298,16 @@ public class Scraper {
                 //Now scrape and check for "subbed/dubbed (english) otherwise discard it
                 ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/small"));
 //                System.out.println(checkSubElement.get(0).getText().toLowerCase());
-                if(checkSubElement.get(0).getText().toLowerCase().contains("english")){
-                    anime.addYouTubeStream(elem.get(0).getText(), elem.get(0).getAttribute("href"));
+
+                try {
+                    if (checkSubElement.get(0).getText().toLowerCase().contains("english")) {
+                        anime.addYouTubeStream(elem.get(0).getText(), elem.get(0).getAttribute("href"));
 //                    System.out.println("added youtube stream for: " + elem.get(0).getText());//Might not be an english stream though
 //                    System.out.println(elem.get(0).getAttribute("href"));
+                    }
+                }catch (IndexOutOfBoundsException e){ //TODO fix whatever issue this actually is
+                    System.out.println(e);
+                    System.out.println("CONTINUING");
                 }
                 //Intentionally allow it to be added to all streams as well
             }

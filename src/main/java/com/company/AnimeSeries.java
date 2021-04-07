@@ -54,9 +54,9 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     public void setUrl(String url) { this.url = url;}
 
 
-    private String findInfo(ArrayList<String> list, String contains){
-        for(String s : list){
-            if(s.toLowerCase().contains(contains.toLowerCase())){
+    public String findInfo(String contains) {
+        for (String s : infoList) {
+            if (s.toLowerCase().contains(contains.toLowerCase())) {
                 return s;
             }
         }
@@ -86,9 +86,13 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     }
 
     public String toString(){
-        String s ="title: '"+title+"'";
+        String s ="";
+        if(title.contains("'")||title.contains("’"))
+            s = s+"title: \""+title+"\""; //escape ' and instead use quotes
+        else
+            s = s+"title: '"+title+"'";
         if(alias!=null)
-            if(alias.contains("'"))
+            if(alias.contains("'")||alias.contains("’"))
                 s = s+"\nalias: [\""+alias+"\"]"; //escape ' and instead use quotes
             else
                 s = s+"\nalias: ['"+alias+"']";
@@ -96,11 +100,11 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
         s=s +
                 "\nhas_source: " + hasSource+
                 "\ninfo:" +
-                "\n  mal: '"+findInfo(infoList,"myanimelist.net")+"'" +
-                "\n  anilist: '"+findInfo(infoList,"anilist.co")+"'" +
-                "\n  anidb: '"+findInfo(infoList,"anidb.net")+"'" +
-                "\n  kitsu: '"+findInfo(infoList,"kitsu.io")+"'"+
-                "\n  animeplanet: '"+findInfo(infoList,"anime-planet.com")+"'"+
+                "\n  mal: '"+findInfo("myanimelist.net")+"'" +
+                "\n  anilist: '"+findInfo("anilist.co")+"'" +
+                "\n  anidb: '"+findInfo("anidb.net")+"'" +
+                "\n  kitsu: '"+findInfo("kitsu.io")+"'"+
+                "\n  animeplanet: '"+findInfo("anime-planet.com")+"'"+
                 "\n  official: '"+officalSite+"'"+
                 "\n  subreddit: ''";
         s=s +
