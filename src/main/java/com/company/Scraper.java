@@ -294,8 +294,8 @@ public class Scraper {
             elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
 
             //TODO: Useful for short testing - Remove otherwise
-            if(count > 4)
-                break;
+//            if(count > 4)
+//                break;
         }
         return animeList;
     }
