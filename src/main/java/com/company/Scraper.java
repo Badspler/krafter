@@ -10,20 +10,24 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Scraper {
 
     private final File driverFile;
     private final String enteredURL;
+    private final File ignoreListFile;
 
-    public Scraper(File driverFile, String url) {
+    public Scraper(File driverFile, String url, File ignoreListFile) {
         this.driverFile = driverFile;
         this.enteredURL = url;
+        this.ignoreListFile = ignoreListFile;
     }
 
     public void scrape() {
@@ -250,14 +254,22 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(20000);
+            Thread.sleep(5000);
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        //TODO: Make a filter file that will be used here to filter out shows from being scanned.
-        //TODO: Useful for "not anime" series/ONA's/shows withouth enough info/after episode shorts that can just be part of the main series discussion
+        //Get the ignoreList file and fill it
+        List<String> blockList = new ArrayList<>();
+        if(ignoreListFile!=null){
+            try {
+                blockList = Files.readAllLines(ignoreListFile.toPath(), Charset.defaultCharset());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
 
         //Find all the season shows
         ArrayList<String> animeList = new ArrayList<>();
@@ -265,8 +277,16 @@ public class Scraper {
         int count=1;
         ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
         while(elem.size() != 0){
-//            System.out.println(elem.get(0).getText());
-//            System.out.println(elem.get(0).getAttribute("href"));
+//            System.out.println("Block name: " + elem.get(0).getText());
+//            System.out.println("Block name: " + elem.get(0).getAttribute("href"));
+
+            //Don't scan anything from the ignoreList
+            if(blockList.contains(elem.get(0).getAttribute("href")) || blockList.contains(elem.get(0).getText())){
+                System.out.println("Excluding: " + elem.get(0).getText());
+                count++;
+                elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
+                continue;
+            }
 
             animeList.add(elem.get(0).getAttribute("href"));
 
@@ -274,8 +294,8 @@ public class Scraper {
             elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
 
             //TODO: Useful for short testing - Remove otherwise
-//            if(count > 4)
-//                break;
+            if(count > 4)
+                break;
         }
         return animeList;
     }
