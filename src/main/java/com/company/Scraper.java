@@ -305,13 +305,14 @@ public class Scraper {
 
     private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url){
 //        System.out.println("Finding stream");
-//        System.out.println("Stream URL: " + url);
+        System.out.println("Stream URL: " + url);
 
         //Get all streams eg:
         //https://www.livechart.me/anime/9711/streams?all_regions=true
         driver.get(url+"/streams?hide_unavailable=false");
+        System.out.println("---");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         //Wait till the title is certainly loaded
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/h4")));
 
