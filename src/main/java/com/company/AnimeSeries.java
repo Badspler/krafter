@@ -18,6 +18,12 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
         infoList.add(info);
     }
 
+    public void printAllStreams(){
+        for(String stream: streamsList){
+            System.out.println(stream);
+        }
+    }
+
     public void addYouTubeStream(String youtubeName, String stream){
         youTubeStreamsList.put(youtubeName,stream);
     }
@@ -48,7 +54,15 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     }
 
     public void setOfficalSite(String officalSite) {
-        this.officalSite = officalSite;
+        if(officalSite!= null)
+        {
+            if(!officalSite.equals("null")){
+                this.officalSite = officalSite;
+            }else{
+                this.officalSite = "";
+            }
+
+        }
     }
 
     public void setUrl(String url) { this.url = url;}
@@ -108,10 +122,10 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  official: '"+officalSite+"'"+
                 "\n  subreddit: ''";
         s=s +
-                "\nstreams: " +
-                "\n  crunchyroll: '"+findSource("crunchyroll.com")+"'" +
-                "\n  museasia: '"+findYouTubeSource("Muse Asia")+"'" +
-                "\n  anione: '"+findYouTubeSource("Ani-One")+"'" +
+                "\nstreams:" +
+                "\n  crunchyroll: '"+findSource("crunchyroll.com/series")+"'" +
+                "\n  museasia: '"+findYouTubeSource("Muse Asia (Playlist)")+"'" +
+                "\n  anione: '"+findYouTubeSource("Ani-One Asia (Playlist)")+"'" +
                 "\n  funimation|Funimation: '"+findSource("funimation.com")+"'" +
                 //Only Wakanim Nordic offers English anime, that comes under '/sc' for whatever reason
                 //akanim Nordic countries: Sweden, Norway, Iceland, Finland, the Netherlands and Denmark.
@@ -120,6 +134,7 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  animelab|AnimeLab: '"+findSource("animelab.com")+"'" +
                 "\n  vrv|VRV: '"+findSource("vrv.co")+"'" +
                 "\n  hulu|Hulu: '"+findSource("hulu.com")+"'" +
+                "\n  disney|Disney: '"+findSource("disneyplus.com")+"'" +
                 "\n  youtube: '"+findSource("TODO")+"'" +
                 "\n  nyaa: ''"; // Title is automatically searched so this is only for alt names
 
@@ -181,6 +196,7 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
             "#  wakanim|Wakanim: ''\n" +
             "#  hidive: ''\n" +
             "#  animelab|AnimeLab: ''\n" +
+            "#  bilibili|Bilibili: ''\n" +
             "#  crunchyroll_nsfw|Crunchyroll: ''\n" +
             "#  vrv|VRV: ''\n" +
             "#  hulu|Hulu: ''\n" +

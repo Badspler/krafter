@@ -1,5 +1,6 @@
 package com.company;
 
+import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -14,6 +15,7 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -56,6 +58,7 @@ public class Scraper {
         options.addArguments("--disable-blink-features=AutomationControlled");
 //        options.addArguments("--start-maximized");
 //        options.addArguments("--start-maximized");
+        WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver(options);
 
         //Cloudflare
@@ -165,7 +168,7 @@ public class Scraper {
             System.out.println(url);
 
             //This one wait ensures the whole page is loaded for all that follow
-            WebDriverWait wait = new WebDriverWait(driver, 5);
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement waitElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
                     By.xpath("/html/body/div[2]/div/div[2]/h4")));
 
@@ -183,7 +186,7 @@ public class Scraper {
             }
 
             //find offical website
-            ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[1]/div[8]/small/a"));
+            ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[1]/div[9]/small/a"));
             if(elem.size() != 0)
 //                anime.setOfficalSite(elem.get(0).getText()); //All are href's and don't always align
                 anime.setOfficalSite(elem.get(0).getAttribute("href"));
@@ -240,7 +243,9 @@ public class Scraper {
 
             //Get all streams:
             //https://www.livechart.me/anime/9711/streams?all_regions=true
+//            System.out.println("Getting streams for: " + anime.getAnimeTitle());
             anime = findStreams(driver,anime,url);
+//            anime.printAllStreams();
 
             System.out.println("---------------------");
             series.add(anime);
@@ -254,7 +259,7 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(5000);
+            Thread.sleep(7000);//TODO: Starting wait time if cloudflair is on
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -300,12 +305,15 @@ public class Scraper {
         return animeList;
     }
 
-    private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url) {
+    private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url){
+//        System.out.println("Finding stream");
+//        System.out.println("Stream URL: " + url);
+
         //Get all streams eg:
         //https://www.livechart.me/anime/9711/streams?all_regions=true
-        driver.get(url+"/streams?all_regions=true");
+        driver.get(url+"/streams?hide_unavailable=false");
 
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
         //Wait till the title is certainly loaded
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/h4")));
 
@@ -333,7 +341,7 @@ public class Scraper {
             }
 
             anime.addStream(elem.get(0).getAttribute("href"));
-
+//            System.out.println("Added stream: " + elem.get(0).getAttribute("href"));
             count++;
             elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/a[1]"));
         }

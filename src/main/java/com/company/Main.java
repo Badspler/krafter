@@ -10,18 +10,18 @@ public class Main {
         //Ask user for URL
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a livechart.me season URL to scan: ");
-        System.out.println("Example: " + "https://www.livechart.me/fall-2021/tv");
+        System.out.println("Example: " + "https://www.livechart.me/summer-2022/tv");
         String url = reader.nextLine(); // Scans the next token of the input as an int.
 
         if(url.equals(""))
-            url="https://www.livechart.me/fall-2021/tv";
+            url="https://www.livechart.me/summer-2022/tv";
 
         reader.close();
 
         if(!url.contains("livechart.me")){
             System.err.println("URL entered: " + url);
             System.err.println("That is not a valid livechart.me URL.");
-            System.err.println("Example: " + "https://www.livechart.me/fall-2021/tv");
+            System.err.println("Example: " + "https://www.livechart.me/winter-2022/tv");
             return;
         }
 
