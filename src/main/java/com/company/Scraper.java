@@ -41,8 +41,6 @@ public class Scraper {
 
         System.setProperty("webdriver.chrome.driver",driverFile.getPath());
         ChromeOptions options = new ChromeOptions();
-        //C:\Users\Chris\AppData\Local\Google\Chrome\User Data\Default
-//        options.addArguments("user-data-dir=C:/Users/Chris/AppData/Local/Google/Chrome/User Data/");
 //        options.addArguments("profile-directory=Profile 8");
         options.addArguments("--start-maximized");
 
