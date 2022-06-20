@@ -309,7 +309,7 @@ public class Scraper {
 
         //Get all streams eg:
         //https://www.livechart.me/anime/9711/streams?all_regions=true
-        driver.get(url+"/streams?hide_unavailable=false");
+        driver.get(url+"/streams?hide_unavailable=false"); 
         System.out.println("---");
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
