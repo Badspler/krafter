@@ -102,15 +102,25 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     public String toString(){
         String s ="";
         if(title.contains("'")||title.contains("’"))
+        {
             s = s+"title: \""+title+"\""; //escape ' and instead use quotes
+
+        }
         else
+        {
             s = s+"title: '"+title+"'";
+        }
+
+        s = s+"\ntitle_en: \"\""; //title_en
+
         if(alias!=null)
             if(alias.contains("'")||alias.contains("’"))
                 s = s+"\nalias: [\""+alias+"\"]"; //escape ' and instead use quotes
             else
                 s = s+"\nalias: ['"+alias+"']";
 
+
+        // Set everything else:
         s=s +
                 "\nhas_source: " + hasSource+
                 "\ninfo:" +
@@ -132,7 +142,7 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
                 "\n  wakanim|Wakanim: '"+findSource("wakanim.tv/sc")+"'" +
                 "\n  hidive: '"+findSource("hidive.com")+"'" +
                 "\n  animelab|AnimeLab: '"+findSource("animelab.com")+"'" +
-                "\n  vrv|VRV: '"+findSource("vrv.co")+"'" +
+                "\n  vrv|VRV: '"+findSource("vrv.co/series")+"'" +
                 "\n  hulu|Hulu: '"+findSource("hulu.com")+"'" +
                 "\n  disney|Disney: '"+findSource("disneyplus.com")+"'" +
                 "\n  youtube: '"+findSource("TODO")+"'" +
@@ -179,6 +189,7 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 
     public static final String emptySeriesTemplate = "#---\n" +
             "#title: ''\n" +
+            "#title_en: ''\n" +
             "#alias: ['']\n" +
             "#has_source: true\n" +
             "#info:\n" +

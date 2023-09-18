@@ -1,6 +1,6 @@
 package com.company;
 
-import io.github.bonigarcia.wdm.WebDriverManager;
+//import io.github.bonigarcia.wdm.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,11 +38,14 @@ public class Scraper {
 //        System.setProperty("webdriver.chrome.driver",driverFile.getPath());
 //        WebDriver driver = new ChromeDriver();
 
-
         System.setProperty("webdriver.chrome.driver",driverFile.getPath());
         ChromeOptions options = new ChromeOptions();
 //        options.addArguments("profile-directory=Profile 8");
         options.addArguments("--start-maximized");
+        options.addArguments("--remote-allow-origins=*");
+
+//        System.out.println("Headless Mode is on");
+//        options.addArguments("--headless");//TODO headless?
 
         //Anti cloudflare
 //        options.add_experimental_option('excludeSwitches', ['load-extension', 'enable-automation'])
@@ -56,7 +59,7 @@ public class Scraper {
         options.addArguments("--disable-blink-features=AutomationControlled");
 //        options.addArguments("--start-maximized");
 //        options.addArguments("--start-maximized");
-        WebDriverManager.chromedriver().setup();
+//        WebDriverManager.chromedriver().setup();
         WebDriver driver = new ChromeDriver(options);
 
         //Cloudflare
@@ -82,13 +85,14 @@ public class Scraper {
         String writePath = System.getProperty("user.dir")+ "\\output\\output.yaml";
         writeStringToFile(textToWrite,writePath);
 
-        textToWrite = streamsToString(series);
-        writePath = System.getProperty("user.dir")+ "\\output\\output_all_streams.yaml";
-        writeStringToFile(textToWrite,writePath);
-
-        textToWrite = seriesToMALList(series);
-        writePath = System.getProperty("user.dir")+ "\\output\\output_MAL_list.yaml";
-        writeStringToFile(textToWrite,writePath);
+        //TODO: is this needed still
+//        textToWrite = streamsToString(series);
+//        writePath = System.getProperty("user.dir")+ "\\output\\output_all_streams.yaml";
+//        writeStringToFile(textToWrite,writePath);
+//
+//        textToWrite = seriesToMALList(series);
+//        writePath = System.getProperty("user.dir")+ "\\output\\output_MAL_list.yaml";
+//        writeStringToFile(textToWrite,writePath);
 
         //Close off driver
         driver.close();
@@ -168,7 +172,7 @@ public class Scraper {
             //This one wait ensures the whole page is loaded for all that follow
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
             WebElement waitElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("/html/body/div[2]/div/div[2]/h4")));
+                    By.xpath("/html/body/div[1]/div[2]/div[1]/div/div[2]/div[1]/span")));
 
             //Get title and alias (subtitle)
             String lines[] = waitElement.getText().split("\\r?\\n");
@@ -184,7 +188,7 @@ public class Scraper {
             }
 
             //find offical website
-            ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[1]/div[9]/small/a"));
+            ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[1]/div[13]/small/a"));
             if(elem.size() != 0)
 //                anime.setOfficalSite(elem.get(0).getText()); //All are href's and don't always align
                 anime.setOfficalSite(elem.get(0).getAttribute("href"));
@@ -242,6 +246,14 @@ public class Scraper {
             //Get all streams:
             //https://www.livechart.me/anime/9711/streams?all_regions=true
 //            System.out.println("Getting streams for: " + anime.getAnimeTitle());
+
+            //TODO Maybe add a sleep/stall here. Find streams performs better with a small wait. Unsure what is causing that need.
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             anime = findStreams(driver,anime,url);
 //            anime.printAllStreams();
 
@@ -257,7 +269,7 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(7000);//TODO: Starting wait time if cloudflair is on
+            Thread.sleep(15000);//TODO: Starting wait time if cloudflair is on
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -309,12 +321,12 @@ public class Scraper {
 
         //Get all streams eg:
         //https://www.livechart.me/anime/9711/streams?all_regions=true
-        driver.get(url+"/streams?hide_unavailable=false"); 
+        driver.get(url+"/streams?hide_unavailable=false");
         System.out.println("---");
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         //Wait till the title is certainly loaded
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[2]/div/div[2]/h4")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]")));
 
         int count=1;
         ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/a[1]"));
