@@ -1,6 +1,7 @@
 package com.company;
 
 //import io.github.bonigarcia.wdm.WebDriverManager;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -38,7 +39,7 @@ public class Scraper {
 //        System.setProperty("webdriver.chrome.driver",driverFile.getPath());
 //        WebDriver driver = new ChromeDriver();
 
-        System.setProperty("webdriver.chrome.driver",driverFile.getPath());
+        System.setProperty("webdriver.chrome.driver", driverFile.getPath());
         ChromeOptions options = new ChromeOptions();
 //        options.addArguments("profile-directory=Profile 8");
         options.addArguments("--start-maximized");
@@ -75,15 +76,15 @@ public class Scraper {
         String livechartURL = enteredURL + "?leftovers=false&ongoing=none";
 
         //Create href list of all seasons non-ongoing shows
-        ArrayList<String> animeList = scrapeSeasonChart(driver,livechartURL);
+        ArrayList<String> animeList = scrapeSeasonChart(driver, livechartURL);
 
         //Scrape each anime found, updates animeList as its passed by reference
-        scrapeEachAnime(driver,series,animeList);
+        scrapeEachAnime(driver, series, animeList);
 
         //Write data collected to files
         String textToWrite = seriesToString(series);
-        String writePath = System.getProperty("user.dir")+ "\\output\\output.yaml";
-        writeStringToFile(textToWrite,writePath);
+        String writePath = System.getProperty("user.dir") + "\\output\\output.yaml";
+        writeStringToFile(textToWrite, writePath);
 
         //TODO: is this needed still
 //        textToWrite = streamsToString(series);
@@ -104,10 +105,10 @@ public class Scraper {
         Collections.sort(series);
         String output = "";
         // Find MAL entry for each show
-        for(AnimeSeries a : series){
+        for (AnimeSeries a : series) {
             String s = a.findInfo("myanimelist.net") + "\n";
 
-            if(s==null){
+            if (s == null) {
                 s = "No MAL entry found: " + a.getAnimeTitle();
             }
 
@@ -119,9 +120,9 @@ public class Scraper {
     private String streamsToString(ArrayList<AnimeSeries> series) {
         Collections.sort(series);
         String output = "";
-        for(AnimeSeries a : series){
+        for (AnimeSeries a : series) {
             output = output + a.getAnimeTitle() + ":\n";
-            for(String stream : a.getStreamsList()){
+            for (String stream : a.getStreamsList()) {
                 output = output + stream + "\n";
             }
             output = output + "---\n";
@@ -132,12 +133,12 @@ public class Scraper {
     private String seriesToString(ArrayList<AnimeSeries> series) {
         Collections.sort(series);
         String output = "";
-        for(AnimeSeries a : series){
+        for (AnimeSeries a : series) {
             output = output + a.toString() + "\n";
             output = output + "---" + "\n";
         }
         //remove the very last line's "---"
-        output = output.substring(0,output.length()-4);
+        output = output.substring(0, output.length() - 4);
 
         //Add the template to the end
         output = output + AnimeSeries.emptySeriesTemplate;
@@ -159,10 +160,23 @@ public class Scraper {
         }
     }
 
+    private static final String TITLE = "//*[@class='text-xl font-medium line-clamp-1']";
+    private static final String ALIAS_TITLE = "//*[@class='text-lg line-clamp-1']";
+    private static final String TITLE_BLOCK = "//*[@class='flex gap-4 items-center md:mb-4']";
+
+    private static final String SOURCE_OR_ORIGINAL_BY_TEXT = "//*[ text() = 'Source' ]"; //TODO: Confirm
+    private static final String OFFICIAL_WEBSITE = "//*[@class='lc-btn lc-btn-sm lc-btn-outline']";
+
+    private static final String MAL_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-myanimelist']";
+    private static final String ANILIST_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-anilist']";
+    private static final String KITSU_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-kitsu']";
+    private static final String ANIDB_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-anidb']";
+    private static final String ANIME_PLANET_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-animeplanet']";
+
 
     private void scrapeEachAnime(WebDriver driver, ArrayList<AnimeSeries> series, ArrayList<String> animeList) {
         //For each anime found, scrape it
-        for(String url : animeList){
+        for (String url : animeList) {
             AnimeSeries anime = new AnimeSeries();
             anime.setUrl(url);
 
@@ -171,76 +185,72 @@ public class Scraper {
 
             //This one wait ensures the whole page is loaded for all that follow
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
-            WebElement waitElement = wait.until(ExpectedConditions.visibilityOfElementLocated(
-                    By.xpath("/html/body/div[1]/div[2]/div[1]/div/div[2]/div[1]/span")));
+            WebElement titleContainerElement = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(TITLE_BLOCK)));
 
-            //Get title and alias (subtitle)
-            String lines[] = waitElement.getText().split("\\r?\\n");
-            System.out.println(lines[0]);
-            anime.setAnimeTitle(lines[0]);
+            //find show title
+            WebElement title = findElementByXpath(driver, TITLE, "TITLE");
+            if (title != null) {
+                anime.setAnimeTitle(title.getText());
+                System.out.println(title.getText());
+            }
 
-            if(lines.length>1) {
-                //If subtitle matches title then skip
-                if(!lines[0].toLowerCase().equals(lines[1].toLowerCase())) {
-                    System.out.println(lines[1]);
-                    anime.setAlias(lines[1]);
-                }
+            //find show alias
+            WebElement alias = findElementByXpath(driver, ALIAS_TITLE, "ALIAS_TITLE");
+            if (alias != null) {
+                anime.setAlias(alias.getText());
+                System.out.println(alias.getText());
             }
 
             //find offical website
-            ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[1]/div[13]/small/a"));
-            if(elem.size() != 0)
-//                anime.setOfficalSite(elem.get(0).getText()); //All are href's and don't always align
-                anime.setOfficalSite(elem.get(0).getAttribute("href"));
-
-
+            WebElement sourceOrOriginal = findElementByXpath(driver, OFFICIAL_WEBSITE, "OFFICIAL_WEBSITE");
+            if (sourceOrOriginal != null)
+                anime.setOfficalSite(sourceOrOriginal.getAttribute("href"));
 
             //find if anime is original, otherwise it has a source. Set it.
-            WebElement element = null;
-            try{
-                element = driver.findElement(By.xpath("//div[@class='info-bar anime-meta-bar']"));
+            try {
+                WebElement element = findElementByXpath(driver, SOURCE_OR_ORIGINAL_BY_TEXT, "SOURCE_OR_ORIGINAL_BY_TEXT");
                 boolean isOriginal = element.getText().contains("Original");
                 anime.setHasSource(!isOriginal);
-            }catch (Exception exc){/**not found will result in null set*/}
+            } catch (Exception exc) {/**not found will result in null set*/}
 
 
             //find external resources by class id
             WebElement externalResource = null;
 
             //Anilist
-            try{
-                externalResource = driver.findElement(By.xpath("//*[@class='button expanded anilist-button']"));
-                if(externalResource != null)
+            try {
+                externalResource = findElementByXpath(driver, ANILIST_BUTTON, "ANILIST_BUTTON");
+                if (externalResource != null)
                     anime.addInfo(externalResource.getAttribute("href"));
-            }catch (Exception exc){/**Not found catch and move on*/}
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
             //Anime planet
-            try{
-                externalResource = driver.findElement(By.xpath("//*[@class='button expanded anime_planet-button']"));
-                if(externalResource != null)
+            try {
+                externalResource = findElementByXpath(driver, ANIME_PLANET_BUTTON, "ANIME_PLANET_BUTTON");
+                if (externalResource != null)
                     anime.addInfo(externalResource.getAttribute("href"));
-            }catch (Exception exc){/**Not found catch and move on*/}
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
             //MyAnimeList
-            try{
-                externalResource = driver.findElement(By.xpath("//*[@class='button expanded myanimelist-button']"));
-                if(externalResource != null)
+            try {
+                externalResource = findElementByXpath(driver, MAL_BUTTON, "MAL_BUTTON");
+                if (externalResource != null)
                     anime.addInfo(externalResource.getAttribute("href"));
-            }catch (Exception exc){/**Not found catch and move on*/}
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
             //Anidb
-            try{
-                externalResource = driver.findElement(By.xpath("//*[@class='button expanded anidb-button']"));
-                if(externalResource != null)
+            try {
+                externalResource = findElementByXpath(driver, ANIDB_BUTTON, "ANIDB_BUTTON");
+                if (externalResource != null)
                     anime.addInfo(externalResource.getAttribute("href"));
-            }catch (Exception exc){/**Not found catch and move on*/}
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
             //Kitsu
-            try{
-                externalResource = driver.findElement(By.xpath("//*[@class='button expanded kitsu-button']"));
-                if(externalResource != null)
+            try {
+                externalResource = findElementByXpath(driver, KITSU_BUTTON, "KITSU_BUTTON");
+                if (externalResource != null)
                     anime.addInfo(externalResource.getAttribute("href"));
-            }catch (Exception exc){/**Not found catch and move on*/}
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
 
             //Get all streams:
@@ -249,18 +259,30 @@ public class Scraper {
 
             //TODO Maybe add a sleep/stall here. Find streams performs better with a small wait. Unsure what is causing that need.
             try {
-                Thread.sleep(3000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
-            anime = findStreams(driver,anime,url);
-//            anime.printAllStreams();
+
+            anime = findStreams(driver, anime, url);
+            anime.printAllStreams();
 
             System.out.println("---------------------");
             series.add(anime);
         }
     }
+
+    private WebElement findElementByXpath(WebDriver driver, String xpathToFind, String elementFinding) {
+        WebElement element = null;
+        try {
+            element = driver.findElement(By.xpath(xpathToFind));
+        } catch (Exception e) {
+            System.out.println("Unable to locate " + elementFinding);
+        }
+        return element;
+    }
+
 
     private ArrayList<String> scrapeSeasonChart(WebDriver driver, String livechartURL) {
 
@@ -269,7 +291,7 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(15000);//TODO: Starting wait time if cloudflair is on
+            Thread.sleep(2000);//TODO: Starting wait time if cloudflair is on
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -277,7 +299,7 @@ public class Scraper {
 
         //Get the ignoreList file and fill it
         List<String> blockList = new ArrayList<>();
-        if(ignoreListFile!=null){
+        if (ignoreListFile != null) {
             try {
                 blockList = Files.readAllLines(ignoreListFile.toPath(), Charset.defaultCharset());
             } catch (IOException e) {
@@ -289,53 +311,53 @@ public class Scraper {
         //Find all the season shows
         ArrayList<String> animeList = new ArrayList<>();
 
-        int count=1;
-        ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
-        while(elem.size() != 0){
+        int count = 1;
+        ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article[" + count + "]/div/h3/a"));
+        while (elem.size() != 0) {
 //            System.out.println("Block name: " + elem.get(0).getText());
 //            System.out.println("Block name: " + elem.get(0).getAttribute("href"));
 
             //Don't scan anything from the ignoreList
-            if(blockList.contains(elem.get(0).getAttribute("href")) || blockList.contains(elem.get(0).getText())){
+            if (blockList.contains(elem.get(0).getAttribute("href")) || blockList.contains(elem.get(0).getText())) {
                 System.out.println("Excluding: " + elem.get(0).getText());
                 count++;
-                elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
+                elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article[" + count + "]/div/h3/a"));
                 continue;
             }
 
             animeList.add(elem.get(0).getAttribute("href"));
 
             count++;
-            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article["+count+"]/div/h3/a"));
+            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article[" + count + "]/div/h3/a"));
 
             //TODO: Useful for short testing - Remove otherwise
-//            if(count > 4)
-//                break;
+            if (count > 4)
+                break;
         }
         return animeList;
     }
 
-    private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url){
+    private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url) {
 //        System.out.println("Finding stream");
         System.out.println("Stream URL: " + url);
 
         //Get all streams eg:
         //https://www.livechart.me/anime/9711/streams?all_regions=true
-        driver.get(url+"/streams?hide_unavailable=false");
+        driver.get(url + "/streams?hide_unavailable=false");
         System.out.println("---");
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         //Wait till the title is certainly loaded
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]")));
 
-        int count=1;
-        ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/a[1]"));
-        while(elem.size() != 0){
+        int count = 1;
+        ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/a[1]"));
+        while (elem.size() != 0) {
 //            System.out.println(elem.get(0).getText());
 //            System.out.println(elem.get(0).getAttribute("href"));
-            if(elem.get(0).getAttribute("href").contains("youtube.com")){
+            if (elem.get(0).getAttribute("href").contains("youtube.com")) {
                 //Now scrape and check for "subbed/dubbed (english) otherwise discard it
-                ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/small"));
+                ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/small"));
 //                System.out.println(checkSubElement.get(0).getText().toLowerCase());
 
                 try {
@@ -344,7 +366,7 @@ public class Scraper {
 //                    System.out.println("added youtube stream for: " + elem.get(0).getText());//Might not be an english stream though
 //                    System.out.println(elem.get(0).getAttribute("href"));
                     }
-                }catch (IndexOutOfBoundsException e){ //TODO fix whatever issue this actually is
+                } catch (IndexOutOfBoundsException e) { //TODO fix whatever issue this actually is
                     System.out.println(e);
                     System.out.println("CONTINUING");
                 }
@@ -354,7 +376,7 @@ public class Scraper {
             anime.addStream(elem.get(0).getAttribute("href"));
 //            System.out.println("Added stream: " + elem.get(0).getAttribute("href"));
             count++;
-            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li["+count+"]/div/div[2]/a[1]"));
+            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/a[1]"));
         }
 
         return anime;
