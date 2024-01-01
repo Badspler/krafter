@@ -186,31 +186,4 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 //      youtube: ''
 //      nyaa: 'Higurashi no Naku Koro ni'
 //    ---
-
-    public static final String emptySeriesTemplate = "#---\n" +
-            "#title: ''\n" +
-            "#title_en: ''\n" +
-            "#alias: ['']\n" +
-            "#has_source: true\n" +
-            "#info:\n" +
-            "#  mal: ''\n" +
-            "#  anilist: ''\n" +
-            "#  anidb: ''\n" +
-            "#  kitsu: ''\n" +
-            "#  animeplanet: ''\n" +
-            "#  official: ''\n" +
-            "#  subreddit: ''\n" +
-            "#streams:\n" +
-            "#  crunchyroll: ''\n" +
-            "#  museasia: ''\n" +
-            "#  funimation|Funimation: ''\n" +
-            "#  wakanim|Wakanim: ''\n" +
-            "#  hidive: ''\n" +
-            "#  animelab|AnimeLab: ''\n" +
-            "#  bilibili|Bilibili: ''\n" +
-            "#  crunchyroll_nsfw|Crunchyroll: ''\n" +
-            "#  vrv|VRV: ''\n" +
-            "#  hulu|Hulu: ''\n" +
-            "#  youtube: ''\n" +
-            "#  nyaa: ''\n";
 }

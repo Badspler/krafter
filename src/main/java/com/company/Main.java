@@ -9,7 +9,7 @@ public class Main {
     public static void main(String[] args){
         //Ask user for URL
 
-        String exampleUrl = "https://www.livechart.me/fall-2023/tv";
+        String exampleUrl = "https://www.livechart.me/winter-2024/tv";
 
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a livechart.me season URL to scan: ");

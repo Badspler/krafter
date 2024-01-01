@@ -1,7 +1,5 @@
 package com.company;
 
-//import io.github.bonigarcia.wdm.WebDriverManager;
-
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -132,16 +130,13 @@ public class Scraper {
 
     private String seriesToString(ArrayList<AnimeSeries> series) {
         Collections.sort(series);
-        String output = "";
+        String output = "---" + "\n"; // Initial line must start with '---'
         for (AnimeSeries a : series) {
             output = output + a.toString() + "\n";
             output = output + "---" + "\n";
         }
         //remove the very last line's "---"
         output = output.substring(0, output.length() - 4);
-
-        //Add the template to the end
-        output = output + AnimeSeries.emptySeriesTemplate;
 
         return output;
     }
@@ -259,7 +254,7 @@ public class Scraper {
 
             //TODO Maybe add a sleep/stall here. Find streams performs better with a small wait. Unsure what is causing that need.
             try {
-                Thread.sleep(2000);
+                Thread.sleep(4000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -331,14 +326,15 @@ public class Scraper {
             elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/main/article[" + count + "]/div/h3/a"));
 
             //TODO: Useful for short testing - Remove otherwise
-            if (count > 4)
-                break;
+//            if (count > 10)
+//                break;
         }
         return animeList;
     }
 
+    private static final String STREAMS_CONTAINER = "//*[@class='card bg-base-300 shadow-md mb-4 divide-y divide-solid divide-base-200']";
+
     private AnimeSeries findStreams(WebDriver driver, AnimeSeries anime, String url) {
-//        System.out.println("Finding stream");
         System.out.println("Stream URL: " + url);
 
         //Get all streams eg:
@@ -348,35 +344,48 @@ public class Scraper {
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         //Wait till the title is certainly loaded
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[1]/div[2]")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(TITLE_BLOCK)));
 
         int count = 1;
-        ArrayList<WebElement> elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/a[1]"));
-        while (elem.size() != 0) {
+//        WebElement elem = driver.findElement(By.xpath(STREAMS_CONTAINER));
+        WebElement elem = findElementByXpath(driver, STREAMS_CONTAINER, "STREAMS_CONTAINER");
+
+        while (elem != null) {
+            WebElement innerElement = findElementByXpath(driver, "/html/body/div[1]/div[2]/div[4]/div[" + count + "]/div/a", "Stream: " + count);
+            // loop terminates when there is no more
+            if(innerElement == null)
+                break;
+
+            System.out.println("Added stream: " + innerElement.getText() + " | href: " + innerElement.getAttribute("href"));
+            anime.addStream(innerElement.getAttribute("href"));
+
+            count++;
+
 //            System.out.println(elem.get(0).getText());
 //            System.out.println(elem.get(0).getAttribute("href"));
-            if (elem.get(0).getAttribute("href").contains("youtube.com")) {
-                //Now scrape and check for "subbed/dubbed (english) otherwise discard it
-                ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/small"));
-//                System.out.println(checkSubElement.get(0).getText().toLowerCase());
-
-                try {
-                    if (checkSubElement.get(0).getText().toLowerCase().contains("english")) {
-                        anime.addYouTubeStream(elem.get(0).getText(), elem.get(0).getAttribute("href"));
-//                    System.out.println("added youtube stream for: " + elem.get(0).getText());//Might not be an english stream though
-//                    System.out.println(elem.get(0).getAttribute("href"));
-                    }
-                } catch (IndexOutOfBoundsException e) { //TODO fix whatever issue this actually is
-                    System.out.println(e);
-                    System.out.println("CONTINUING");
-                }
-                //Intentionally allow it to be added to all streams as well
-            }
-
-            anime.addStream(elem.get(0).getAttribute("href"));
+            //TODO: Test youtube stuff
+//            if (elem.get(0).getAttribute("href").contains("youtube.com")) {
+//                //Now scrape and check for "subbed/dubbed (english) otherwise discard it
+//                ArrayList<WebElement> checkSubElement = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/small"));
+////                System.out.println(checkSubElement.get(0).getText().toLowerCase());
+//
+//                try {
+//                    if (checkSubElement.get(0).getText().toLowerCase().contains("english")) {
+//                        anime.addYouTubeStream(elem.get(0).getText(), elem.get(0).getAttribute("href"));
+////                    System.out.println("added youtube stream for: " + elem.get(0).getText());//Might not be an english stream though
+////                    System.out.println(elem.get(0).getAttribute("href"));
+//                    }
+//                } catch (IndexOutOfBoundsException e) { //TODO fix whatever issue this actually is
+//                    System.out.println(e);
+//                    System.out.println("CONTINUING");
+//                }
+//                //Intentionally allow it to be added to all streams as well
+//            }
+//
+//            anime.addStream(elem.get(0).getAttribute("href"));
 //            System.out.println("Added stream: " + elem.get(0).getAttribute("href"));
-            count++;
-            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/a[1]"));
+//            count++;
+//            elem = (ArrayList<WebElement>) driver.findElements(By.xpath("/html/body/div[2]/div/div[2]/div[3]/div/li[" + count + "]/div/div[2]/a[1]"));
         }
 
         return anime;
