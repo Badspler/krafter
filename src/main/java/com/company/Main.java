@@ -8,26 +8,29 @@ public class Main {
 
     public static void main(String[] args){
         //Ask user for URL
+
+        String exampleUrl = "https://www.livechart.me/winter-2024/tv";
+
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a livechart.me season URL to scan: ");
-        System.out.println("Example: " + "https://www.livechart.me/summer-2022/tv");
+        System.out.println("Example: " + exampleUrl);
         String url = reader.nextLine(); // Scans the next token of the input as an int.
 
         if(url.equals(""))
-            url="https://www.livechart.me/summer-2022/tv";
+            url=exampleUrl;
 
         reader.close();
 
         if(!url.contains("livechart.me")){
             System.err.println("URL entered: " + url);
             System.err.println("That is not a valid livechart.me URL.");
-            System.err.println("Example: " + "https://www.livechart.me/winter-2022/tv");
+            System.err.println("Example: " + exampleUrl);
             return;
         }
 
 
         //Try find chrome driver, otherwise fall back on filechooser.
-        String path = System.getProperty("user.dir")+"\\libs\\chromedriver_win32\\chromedriver.exe";
+        String path = System.getProperty("user.dir")+"\\libs\\chromedriver-win32\\chromedriver.exe";
         File driverFile = new File(path);
 
         if(!driverFile.exists()) {
