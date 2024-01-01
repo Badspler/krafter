@@ -1,5 +1,5 @@
 .idea/
 debug.log
 target/
-.iml
+*.iml
 output/*
