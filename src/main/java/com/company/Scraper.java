@@ -159,7 +159,9 @@ public class Scraper {
     private static final String ALIAS_TITLE = "//*[@class='text-lg line-clamp-1']";
     private static final String TITLE_BLOCK = "//*[@class='flex gap-4 items-center md:mb-4']";
 
-    private static final String SOURCE_OR_ORIGINAL_BY_TEXT = "//*[ text() = 'Source' ]"; //TODO: Confirm
+
+    private static final String FORMAT_BLOCK = "//*[@class='text-xs text-base-content/75 whitespace-nowrap']"; //TV, OVA, ONA, etc
+    private static final String SOURCE_OR_ORIGINAL_BY_TEXT = "//*[@class='whitespace-nowrap text-ellipsis overflow-hidden']";
     private static final String OFFICIAL_WEBSITE = "//*[@class='lc-btn lc-btn-sm lc-btn-outline']";
 
     private static final String MAL_BUTTON = "//*[@class='btn btn-sm btn-block lc-btn-myanimelist']";
@@ -172,8 +174,15 @@ public class Scraper {
     private void scrapeEachAnime(WebDriver driver, ArrayList<AnimeSeries> series, ArrayList<String> animeList) {
         //For each anime found, scrape it
         for (String url : animeList) {
+
             AnimeSeries anime = new AnimeSeries();
             anime.setUrl(url);
+
+            try { // Bonus little wait for clourlairing
+                Thread.sleep(2000);//TODO: Starting wait time if cloudflair is on
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             driver.get(url);
             System.out.println(url);
@@ -208,9 +217,25 @@ public class Scraper {
                 anime.setHasSource(!isOriginal);
             } catch (Exception exc) {/**not found will result in null set*/}
 
+            //find if anime is original, otherwise it has a source. Set it.
+            try {
+                WebElement element = findElementByXpath(driver, FORMAT_BLOCK, "FORMAT_BLOCK");
+                // first element is the "Format" text, the following is actually what we want. But the div doesn't have a class to xpath to directly.
+                WebElement parentDiv = element.findElement(By.xpath("./.."));
+                String textValue = parentDiv.getText().replace("Format", "").trim();
+                textValue = textValue.replace("\n", "").trim();
+
+                anime.setSeriesFormat(textValue);
+            } catch (Exception exc) {/**not found will result in null set*/}
+
 
             //find external resources by class id
             WebElement externalResource = null;
+
+            //livechart.me
+            try {
+                anime.addInfo(url);
+            } catch (Exception exc) {/**Not found catch and move on*/}
 
             //Anilist
             try {
@@ -286,7 +311,7 @@ public class Scraper {
 
         try {
             System.out.println("Waiting");
-            Thread.sleep(2000);//TODO: Starting wait time if cloudflair is on
+            Thread.sleep(7000);//TODO: Starting wait time if cloudflair is on
             System.out.println("Waiting finished.");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -353,7 +378,7 @@ public class Scraper {
         while (elem != null) {
             WebElement innerElement = findElementByXpath(driver, "/html/body/div[1]/div[2]/div[4]/div[" + count + "]/div/a", "Stream: " + count);
             // loop terminates when there is no more
-            if(innerElement == null)
+            if (innerElement == null)
                 break;
 
             System.out.println("Added stream: " + innerElement.getText() + " | href: " + innerElement.getAttribute("href"));

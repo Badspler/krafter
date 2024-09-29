@@ -5,8 +5,10 @@ import java.util.HashMap;
 
 public class AnimeSeries implements Comparable<AnimeSeries>{
 
-    private String title,alias;
+    private String title;
+    private String alias;
     private Boolean hasSource;
+    private String seriesFormat; //TV, OVA, ONA, Movie, etc
     private String officalSite;
 
     private ArrayList<String> streamsList = new ArrayList<>();
@@ -51,6 +53,10 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 
     public void setHasSource(Boolean hasSource) {
         this.hasSource = hasSource;
+    }
+
+    public void setSeriesFormat(String seriesFormat) {
+        this.seriesFormat = seriesFormat;
     }
 
     public void setOfficalSite(String officalSite) {
@@ -123,11 +129,13 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
         // Set everything else:
         s=s +
                 "\nhas_source: " + hasSource+
+                "\ntype: " + seriesFormat+
                 "\ninfo:" +
                 "\n  mal: '"+findInfo("myanimelist.net")+"'" +
                 "\n  anilist: '"+findInfo("anilist.co")+"'" +
+                "\n  livechart: '"+findInfo("livechart.me")+"'" +
                 "\n  anidb: '"+findInfo("anidb.net")+"'" +
-                "\n  kitsu: '"+findInfo("kitsu.io")+"'"+
+                "\n  kitsu: '"+findInfo("kitsu.app")+"'"+
                 "\n  animeplanet: '"+findInfo("anime-planet.com")+"'"+
                 "\n  official: '"+officalSite+"'"+
                 "\n  subreddit: ''";

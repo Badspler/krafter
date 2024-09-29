@@ -8,8 +8,7 @@ public class Main {
 
     public static void main(String[] args){
         //Ask user for URL
-
-        String exampleUrl = "https://www.livechart.me/winter-2024/tv";
+        String exampleUrl = "https://www.livechart.me/fall-2024/tv";
 
         Scanner reader = new Scanner(System.in);  // Reading from System.in
         System.out.println("Enter a livechart.me season URL to scan: ");
@@ -30,6 +29,7 @@ public class Main {
 
 
         //Try find chrome driver, otherwise fall back on filechooser.
+        System.out.println("Driver Updates are at: https://googlechromelabs.github.io/chrome-for-testing/");
         String path = System.getProperty("user.dir")+"\\libs\\chromedriver-win32\\chromedriver.exe";
         File driverFile = new File(path);
 
