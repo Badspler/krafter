@@ -165,35 +165,4 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
     public int compareTo(AnimeSeries o) {
         return this.title.compareTo(o.title);
     }
-
-
-
-
-//TODO: EXAMPLE.
-
-//    title: 'Higurashi no Naku Koro ni Gou [Reboot only thread]'
-//    alias: ['Higurashi: When They Cry - New']
-//    has_source: false
-//    info:
-//      mal: 'https://myanimelist.net/anime/41006/Higurashi_no_Naku_Koro_ni_2020'
-//      anilist: 'https://anilist.co/anime/114446/Higurashi-no-Naku-Koro-ni-2020/'
-//      anidb: 'https://anidb.net/anime/15350'
-//      kitsu: 'https://kitsu.io/anime/higurashi-no-naku-koro-ni-shin-project'
-//      animeplanet: 'https://www.anime-planet.com/anime/higurashi-when-they-cry-new'
-//      official: 'https://higurashianime.com/'
-//      subreddit: '/r/Higurashinonakakoroni'
-//    streams:
-//      crunchyroll: ''
-//      museasia: ''
-//      anione: 'https://www.youtube.com/playlist?list=PLxSscENEp7Jj1KDCcoLBqT6tpeSjzbFN9'
-//      funimation|Funimation: 'https://www.funimation.com/shows/higurashi-when-they-cry-new/'
-//      wakanim|Wakanim: 'https://www.wakanim.tv/sc/v2/catalogue/show/950/higurashi-when-they-cry-new'
-//      hidive: ''
-//      animelab|AnimeLab: 'https://www.animelab.com/shows/higurashi-when-they-cry--new'
-//      crunchyroll_nsfw|Crunchyroll: ''
-//      vrv|VRV: ''
-//      hulu|Hulu: 'https://www.hulu.com/series/higurashi-when-they-cry-eebf8a07-1977-4045-9ee9-f9d2f0799634'
-//      youtube: ''
-//      nyaa: 'Higurashi no Naku Koro ni'
-//    ---
 }
