@@ -107,29 +107,31 @@ public class AnimeSeries implements Comparable<AnimeSeries>{
 
     public String toString(){
         String s ="";
+
         if(title.contains("'")||title.contains("’"))
         {
             s = s+"title: \""+title+"\""; //escape ' and instead use quotes
-
         }
         else
         {
             s = s+"title: '"+title+"'";
         }
 
-        s = s+"\ntitle_en: \"\""; //title_en
-
         if(alias!=null)
             if(alias.contains("'")||alias.contains("’"))
-                s = s+"\nalias: [\""+alias+"\"]"; //escape ' and instead use quotes
+                s = s+"\ntitle_en: \""+alias+"\""; //escape ' and instead use quotes
             else
-                s = s+"\nalias: ['"+alias+"']";
+                s = s+"\ntitle_en: '"+alias+"'";
+        else
+            s = s+"\ntitle_en: ''";
+
+        s = s+"\nalias: ['']";
 
 
         // Set everything else:
         s=s +
                 "\nhas_source: " + hasSource+
-                "\ntype: " + seriesFormat+
+//                "\ntype: " + seriesFormat+
                 "\ninfo:" +
                 "\n  mal: '"+findInfo("myanimelist.net")+"'" +
                 "\n  anilist: '"+findInfo("anilist.co")+"'" +
